@@ -20,24 +20,23 @@ describe('Streamory', function () {
   });
 
   it('should cache the last chunk', function (done) {
-    var someChunk = 'Hello world!';
+    var someChunk = 'Hello World';
     var anotherChunk = 'Foo bar baz';
-    var tasks = [];
-    var source = new stream.Readable();
+    var source = new stream.Readable({ objectMode: true });
     var streamory = new Streamory();
     source.pipe(streamory);
-    tasks.push(streamory.get());
-    source.push(someChunk);
+    source.push(Promise.reject(someChunk));
     source.push(anotherChunk);
     source.push(null);
-    setTimeout(function () {
-      tasks.push(streamory.get());
-      Promise.all(tasks).then(function (results) {
-        assert.equal(results[0], someChunk);
-        assert.equal(results[1], anotherChunk);
-        done();
-      });
-    }, 0);
+    streamory.get().catch(function (chunk) {
+      assert.equal(chunk, someChunk);
+      setTimeout(function () {
+        streamory.get().then(function (chunk) {
+          assert.equal(chunk, anotherChunk);
+          done();
+        });
+      }, 0);
+    });
   });
 
   it('should return immediately if returnImmediately is truthy', function (done) {
