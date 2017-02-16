@@ -4,21 +4,6 @@ var stream = require('stream');
 var Streamory = require('..');
 
 describe('Streamory', function () {
-  it('should write what it reads', function (done) {
-    var someChunk = 'Hello world!';
-    var source = new stream.Readable();
-    var writable = new stream.Writable({
-      write: function (chunk, encoding, callback) {
-        callback();
-        assert.equal(chunk, someChunk);
-        done();
-      }
-    });
-    source.pipe(new Streamory()).pipe(writable);
-    source.push(someChunk);
-    source.push(null);
-  });
-
   it('should cache the last chunk', function (done) {
     var someChunk = 'Hello World';
     var anotherChunk = 'Foo bar baz';
@@ -26,6 +11,7 @@ describe('Streamory', function () {
     var streamory = new Streamory();
     source.pipe(streamory);
     source.push(Promise.reject(someChunk));
+    for (let i = 0; i < 100; i++) source.push('42');
     source.push(anotherChunk);
     source.push(null);
     streamory.get().catch(function (chunk) {

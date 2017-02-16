@@ -1,6 +1,6 @@
 {
   "name": "streamory",
-  "version": "0.0.4",
+  "version": "0.1.1",
   "description": "A duplex stream to cache a stream and provide a getter to access the cache.",
   "main": "index.js",
   "scripts": {
