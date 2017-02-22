@@ -62,4 +62,19 @@ describe('Streamory', function () {
       done();
     });
   });
+
+  it('should reject if no data is written when the timeout is arrived', function (done) {
+    var streamory = new Streamory({ timeout: 10 });
+    streamory.get().catch(function () { done(); });
+  });
+
+  it('should resolve if some data is written before the timeout is arrived', function (done) {
+    var chunk = 'Hello world';
+    var streamory = new Streamory({ timeout: 10 });
+    setTimeout(function () { streamory.write(chunk); }, 5);
+    streamory.get().then(function (data) {
+      assert.strictEqual(chunk, data);
+      done();
+    });
+  });
 });
