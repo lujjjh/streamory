@@ -16,6 +16,16 @@ describe('Streamory with the file option specified', function () {
     }, console.error);
   });
 
+  it('should emit cacheload event', function (done) {
+    var chunk = 'Hello world';
+    var streamory = new Streamory({ file });
+    streamory.once('cacheload', function (data) {
+      assert.strictEqual(chunk, data);
+      done();
+    });
+    streamory.get();
+  });
+
   it('should emit filewriteerror event if error occurs when writing', function (done) {
     var chunk = 'Hello world';
     var streamory = new Streamory({ file: '/' });
