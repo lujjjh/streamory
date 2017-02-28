@@ -65,7 +65,10 @@ describe('Streamory', function () {
 
   it('should reject if no data is written when the timeout is arrived', function (done) {
     var streamory = new Streamory({ timeout: 10 });
-    streamory.get().catch(function () { done(); });
+    streamory.get().catch(function (error) {
+      assert(error instanceof Streamory.NoDataError);
+      done();
+    });
   });
 
   it('should resolve if some data is written before the timeout is arrived', function (done) {
